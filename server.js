@@ -1,37 +1,73 @@
-const express = require('express'); // Express framework for creating the server
-const bodyParser = require('body-parser'); // Middleware for parsing form data
+const express = require('express');
+const bodyParser = require('body-parser');
 
-// Initialize the app
 const app = express();
 
-// Middleware setup
-app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded form data
-app.use(express.static('public')); // Serve static files (like CSS) from the 'public' folder
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static('public'));
 
-// Route for the home page
+// Home page route
 app.get('/', (req, res) => {
-    // Serve the index.html file when the user accesses the root URL
     res.sendFile(__dirname + '/views/index.html');
 });
 
-// Route for handling the form submission
-app.post('/greet', (req, res) => {
-    // Retrieve the 'name' field value from the submitted form
-    const name = req.body.name;
+// BMI calculation route
+app.post('/calculate', (req, res) => {
+    const weight = parseFloat(req.body.weight);
+    const height = parseFloat(req.body.height);
+    const age = req.body.age;
+    const gender = req.body.gender;
 
-    // Send a personalized greeting as the response
+    // Input validation
+    if (isNaN(weight) || isNaN(height) || weight <= 0 || height <= 0) {
+        res.send(`
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Invalid Input</title>
+                <link rel="stylesheet" href="/style.css">
+            </head>
+            <body>
+                <h1>Invalid input</h1>
+                <p>Please ensure weight and height are positive numbers.</p>
+                <a href="/">Go back</a>
+            </body>
+            </html>
+        `);
+        return;
+    }
+
+    // Calculate BMI
+    const bmi = weight / (height * height);
+    let category = '';
+
+    if (bmi < 18.5) {
+        category = 'Underweight';
+    } else if (bmi >= 18.5 && bmi <= 24.9) {
+        category = 'Normal weight';
+    } else if (bmi >= 25 && bmi <= 29.9) {
+        category = 'Overweight';
+    } else {
+        category = 'Obesity';
+    }
+
+    // Send result page
     res.send(`
         <!DOCTYPE html>
         <html lang="en">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Your Greeting</title>
+            <title>BMI Result</title>
             <link rel="stylesheet" href="/style.css">
         </head>
         <body>
-            <h1>Your Personalized Greeting</h1>
-            <p>Hello, ${name}! Nice to meet you!</p>
+            <h1>Your BMI Result</h1>
+            <p>BMI: ${bmi.toFixed(2)}</p>
+            <p>Category: ${category}</p>
+            <p>Age: ${age}, Gender: ${gender}</p>
             <a href="/">Go back</a>
         </body>
         </html>
@@ -39,8 +75,7 @@ app.post('/greet', (req, res) => {
 });
 
 // Start the server
-const PORT = 3000; // Define the port number
+const PORT = 3000;
 app.listen(PORT, () => {
-    // Log a message when the server starts
     console.log(`Server is running on http://localhost:${PORT}`);
 });
