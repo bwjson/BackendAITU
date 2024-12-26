@@ -1,61 +1,67 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    margin: 0;
-    padding: 20px;
-    text-align: center;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
-    color: #007BFF;
-    margin-bottom: 20px;
+  text-align: center;
 }
 
 form {
-    background: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    display: inline-block;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center; /* Центрирует содержимое формы */
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
-label, input, select, button {
-    display: block;
-    margin: 10px auto; /* Центрирует элементы формы */
-}
-
-input, select {
-    padding: 10px;
-    width: 200px;
-    max-width: 300px;
-    box-sizing: border-box; /* Учитывает padding в общей ширине */
+input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px 0 0 4px;
 }
 
 button {
-    padding: 10px 20px;
-    background-color: #004cff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 200px;
-    max-width: 300px;
-    margin: 10px auto;
+  padding: 10px 20px;
+  border: none;
+  background: #1db954;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 0 4px 4px 0;
 }
 
 button:hover {
-    background-color: #0056b3;
+  background: #14833b;
 }
 
-a {
-    margin-top: 20px;
-    display: inline-block;
-    color: #007BFF;
-    text-decoration: none;
+.track {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-a:hover {
-    text-decoration: underline;
+.track img {
+  width: 80px;
+  height: 80px;
+  margin-right: 20px;
+  border-radius: 8px;
+}
+
+.track h3 {
+  margin: 0 0 5px;
+}
+
+.track p {
+  margin: 0;
 }

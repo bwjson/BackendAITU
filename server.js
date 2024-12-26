@@ -1,81 +1,61 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
+const SpotifyWebApi = require('spotify-web-api-node');
 
 const app = express();
+const PORT = 3000;
 
+// Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// Home page route
+// Spotify API setup
+const spotifyApi = new SpotifyWebApi({
+  clientId: process.env.SPOTIFY_CLIENT_ID,
+  clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+});
+
+// Fetch Access Token
+spotifyApi.clientCredentialsGrant().then(
+  (data) => {
+    spotifyApi.setAccessToken(data.body['access_token']);
+  },
+  (err) => {
+    console.error('Error retrieving access token', err);
+  }
+);
+
+// Routes
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/views/index.html');
+  res.sendFile(__dirname + '/views/index.html');
 });
 
-// BMI calculation route
-app.post('/calculate', (req, res) => {
-    const weight = parseFloat(req.body.weight);
-    const height = parseFloat(req.body.height);
-    const age = req.body.age;
-    const gender = req.body.gender;
+app.post('/search', (req, res) => {
+  const query = req.body.query;
 
-    // Input validation
-    if (isNaN(weight) || isNaN(height) || weight <= 0 || height <= 0) {
-        res.send(`
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Invalid Input</title>
-                <link rel="stylesheet" href="/style.css">
-            </head>
-            <body>
-                <h1>Invalid input</h1>
-                <p>Please ensure weight and height are positive numbers.</p>
-                <a href="/">Go back</a>
-            </body>
-            </html>
-        `);
-        return;
+  spotifyApi.searchTracks(query).then(
+    (data) => {
+      const tracks = data.body.tracks.items.map((track) => ({
+        name: track.name,
+        artists: track.artists.map((artist) => artist.name).join(', '),
+        album: track.album.name,
+        link: track.external_urls.spotify,
+        image: track.album.images[0]?.url,
+        releaseDate: track.album.release_date,
+        popularity: track.popularity,
+      }));
+
+      res.json(tracks);
+    },
+    (err) => {
+      console.error('Error fetching tracks', err);
+      res.status(500).send('Error fetching tracks');
     }
-
-    // Calculate BMI
-    const bmi = weight / (height * height);
-    let category = '';
-
-    if (bmi < 18.5) {
-        category = 'Underweight';
-    } else if (bmi >= 18.5 && bmi <= 24.9) {
-        category = 'Normal weight';
-    } else if (bmi >= 25 && bmi <= 29.9) {
-        category = 'Overweight';
-    } else {
-        category = 'Obesity';
-    }
-
-    // Send result page
-    res.send(`
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>BMI Result</title>
-            <link rel="stylesheet" href="/style.css">
-        </head>
-        <body>
-            <h1>Your BMI Result</h1>
-            <p>BMI: ${bmi.toFixed(2)}</p>
-            <p>Category: ${category}</p>
-            <p>Age: ${age}, Gender: ${gender}</p>
-            <a href="/">Go back</a>
-        </body>
-        </html>
-    `);
+  );
 });
 
-// Start the server
-const PORT = 3000;
+// Start Server
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
