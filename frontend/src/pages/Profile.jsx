@@ -17,7 +17,7 @@ const Profile = () => {
     });
 
     useEffect(() => {
-        axios.get('http://localhost:3000/api/v1/user/profile', {
+        axios.get('https://backendaitu.onrender.com/api/v1/user/profile', {
             headers: {
                 Authorization: "Bearer " + localStorage.getItem("token")
             }
@@ -45,7 +45,7 @@ const Profile = () => {
     };
 
     const handleSave = () => {
-        axios.put('http://localhost:3000/api/v1/user/profile', newData, {
+        axios.put('https://backendaitu.onrender.com/api/v1/user/profile', newData, {
             headers: {
                 Authorization: "Bearer " + localStorage.getItem("token")
             }

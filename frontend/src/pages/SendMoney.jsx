@@ -21,7 +21,7 @@ const SendMoney = () => {
         try {
             setLoading(true);
 
-            const response = await axios.post('http://localhost:3000/api/v1/account/transfer', {
+            const response = await axios.post('https://backendaitu.onrender.com/api/v1/account/transfer', {
                 to: id,
                 amount: amount
             }, {

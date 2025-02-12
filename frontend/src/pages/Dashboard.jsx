@@ -18,7 +18,7 @@ const Dashboard = () => {
             return;
         }
 
-        axios.get('http://localhost:3000/api/v1/account/balance', {
+        axios.get('https://backendaitu.onrender.com/api/v1/account/balance', {
             headers: {
                 Authorization: "Bearer " + token
             }

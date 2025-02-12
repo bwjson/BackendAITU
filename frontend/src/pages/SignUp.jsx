@@ -23,7 +23,7 @@ const SignUp = () => {
     const registerUser = async () => {
         try {
             setLoading(true);
-            const response = await axios.post('http://localhost:3000/api/v1/user/signup', {
+            const response = await axios.post('https://backendaitu.onrender.com/api/v1/user/signup', {
                 username,
                 firstName,
                 lastName,

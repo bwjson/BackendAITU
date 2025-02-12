@@ -14,7 +14,7 @@ const Users = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get('http://localhost:3000/api/v1/user/bulk?filter=' + debounceFilter)
+        axios.get('https://backendaitu.onrender.com/api/v1/user/bulk?filter=' + debounceFilter)
             .then((response) => {
                 setUsers(response.data.user);
             })
