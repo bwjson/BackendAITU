@@ -129,6 +129,37 @@ router.put('/', authMiddleware, async (req, res) => {
     })
 })
 
+// Update User Profile Route
+// Update User Profile Route
+router.put('/profile', authMiddleware, async (req, res) => {
+    const { success } = updateSchema.safeParse(req.body);
+    const userId = req.userId;
+
+    if (!success) {
+        return res.status(411).json({
+            message: 'Error while updating information'
+        });
+    }
+
+    // Update user details in the database
+    await User.updateOne(
+        { _id: userId },
+        { 
+            $set: {
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                username: req.body.username
+            }
+        }
+    );
+
+    return res.json({
+        message: 'Updated successfully!'
+    });
+});
+
+
+
 
 router.get('/bulk', async (req, res) => {
     const filter = req.query.filter || '';
@@ -155,6 +186,29 @@ router.get('/bulk', async (req, res) => {
             _id: user._id
         }))
     })
+})
+
+router.get('/profile', authMiddleware, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId).select('-password'); // Исключаем пароль из ответа
+
+        if (!user) {
+            return res.status(404).json({
+                message: 'User not found'
+            });
+        }
+
+        res.json({
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            _id: user._id
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Server error'
+        });
+    }
 })
 
 module.exports = router;
