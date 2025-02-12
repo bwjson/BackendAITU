@@ -27,3 +27,15 @@ SimpleFinanceApp is a web application designed to help users manage their financ
 - **GET /api/v1/account/balance**: Retrieve the account balance of the authenticated user (use authentication middleware).
 - **POST /api/v1/account/transfer**: Transfer funds between users (use authentication middleware).
 
+To run locally:
+`npm install`
+`node index.js`
+
+To run using Docker:
+`docker build -t node_app .`
+`docker run -p 3000:3000 node_app`
+
+Frontend:
+`npm install`
+`npm run dev`
+
